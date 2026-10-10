@@ -6,3 +6,4 @@
 # Generated in CI (build.yml generate-sources job)
 /flatpak/cargo-sources.json
 Cargo.lock
+.idea

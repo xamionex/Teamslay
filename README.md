@@ -1,6 +1,12 @@
 <div align="center">
-  <h1>Orbolay</h1>
-  <p>Quick, small, native, multi-platform Discord overlay alternative</p>
+  <h1>AI notice</h1>
+  <h4>I used AI to add support for Teamspeak 3+6</h4>
+  <p>I'm not going to publish this, it was an joke idea I had, you can take this and do whatever you want with it IMO</p>
+</div>
+
+<div align="center">
+  <h1>Orbolay (Teamslay)</h1>
+  <p>Quick, small, native, multi-platform overlay for Discord and Teamspeak 3+6</p>
 </div>
 
 <div align="center">
