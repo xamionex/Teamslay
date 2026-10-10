@@ -16,6 +16,7 @@ use orbolay_core::{
 use orbolay_logging::warn;
 use scraper::{Html, Selector};
 
+use crate::util::avatar_server::local_avatar_url;
 use crate::util::html_template::{
   escape_html, is_network_url, merge_classes, render_tag, theme_decls,
 };
@@ -310,6 +311,17 @@ pub fn user_template_classes(user: &User, is_self: bool) -> Vec<&'static str> {
 fn avatar_url(user: &User) -> String {
   if user.avatar.is_empty() {
     return String::new();
+  }
+
+  // Local files (TeamSpeak caches avatars on disk) go through the loopback
+  // server, because the HTML viewer only fetches http and https URLs.
+  if let Some(path) = user.avatar.strip_prefix("file://") {
+    return local_avatar_url(path);
+  }
+
+  // Transport backends (eg. TeamSpeak) provide a full avatar URL directly.
+  if is_network_url(&user.avatar) {
+    return user.avatar.clone();
   }
 
   format!(

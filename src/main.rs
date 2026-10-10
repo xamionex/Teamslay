@@ -67,6 +67,15 @@ pub struct Args {
   #[options(help = "Force IPC mode instead of websocket")]
   ipc: bool,
 
+  #[options(help = "Use the TeamSpeak 6 client transport")]
+  ts6: bool,
+
+  #[options(help = "Use the TeamSpeak 3 client query transport")]
+  ts3: bool,
+
+  #[options(help = "Auto-detect the TeamSpeak transport (TS6, then TS3)")]
+  tsauto: bool,
+
   #[options(help = "Open the configuration window")]
   config: bool,
 
@@ -224,6 +233,12 @@ fn app() -> impl IntoElement {
       Some(TransportMode::Websocket)
     } else if args.ipc {
       Some(TransportMode::Ipc)
+    } else if args.ts6 {
+      Some(TransportMode::Ts6)
+    } else if args.ts3 {
+      Some(TransportMode::Ts3)
+    } else if args.tsauto {
+      Some(TransportMode::TsAuto)
     } else {
       None
     };

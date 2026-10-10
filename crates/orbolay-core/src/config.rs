@@ -10,6 +10,10 @@ pub enum TransportMode {
   #[default]
   Ipc,
   Websocket,
+  Ts6,
+  Ts3,
+  #[serde(rename = "tsAuto")]
+  TsAuto,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
@@ -26,6 +30,9 @@ impl Display for TransportMode {
     match self {
       TransportMode::Ipc => write!(f, "ipc"),
       TransportMode::Websocket => write!(f, "websocket"),
+      TransportMode::Ts6 => write!(f, "ts6"),
+      TransportMode::Ts3 => write!(f, "ts3"),
+      TransportMode::TsAuto => write!(f, "tsAuto"),
     }
   }
 }
@@ -35,6 +42,9 @@ impl From<String> for TransportMode {
     match value.as_ref() {
       "ipc" => TransportMode::Ipc,
       "websocket" => TransportMode::Websocket,
+      "ts6" => TransportMode::Ts6,
+      "ts3" => TransportMode::Ts3,
+      "tsauto" | "tsAuto" => TransportMode::TsAuto,
       _ => TransportMode::Ipc,
     }
   }
@@ -133,6 +143,17 @@ pub struct Config {
   pub user_template: Option<String>,
   #[serde(default)]
   pub notification_template: Option<String>,
+  // TeamSpeak specific settings
+  #[serde(default)]
+  pub ts6_ws_url: Option<String>,
+  #[serde(default)]
+  pub ts3_host: Option<String>,
+  #[serde(default)]
+  pub ts3_port: Option<u16>,
+  #[serde(default)]
+  pub ts3_api_key: Option<String>,
+  #[serde(default)]
+  pub ts6_api_key: Option<String>,
 }
 
 impl Default for Config {
@@ -161,6 +182,11 @@ impl Default for Config {
       ui_scale: default_ui_scale(),
       user_template: None,
       notification_template: None,
+      ts6_ws_url: Some("ws://localhost:5899".into()),
+      ts3_host: Some("127.0.0.1".into()),
+      ts3_port: Some(25639),
+      ts3_api_key: None,
+      ts6_api_key: None,
     }
   }
 }

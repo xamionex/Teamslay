@@ -31,7 +31,7 @@ mod toggle;
 const WIDTH: f32 = 600.;
 const HEIGHT: f32 = 600.;
 
-const TRANSPORT_MODES: &[&str] = &["ipc", "websocket"];
+const TRANSPORT_MODES: &[&str] = &["ipc", "websocket", "ts6", "ts3", "tsAuto"];
 
 const ALIGNMENTS: &[&str] = &[
   "topleft",
@@ -236,6 +236,48 @@ fn configurator(app: AppHandle, standalone: bool) -> impl IntoElement {
         }
       }),
       disabled: config.transport_mode != TransportMode::Websocket,
+    })
+    .child(divider())
+    // TeamSpeak specific settings
+    .child(SettingRow {
+      name: "TS6 WebSocket URL".into(),
+      description: Some("WebSocket URL for TeamSpeak 6 client (TS6 mode).".into()),
+      kind: SettingKind::Input(Some(config.ts6_ws_url.clone().unwrap_or_else(|| "ws://localhost:5899".into()))),
+      on_change: make_updater(app.clone(), local_config, |cfg, v| {
+        cfg.ts6_ws_url = Some(v);
+      }),
+      disabled: config.transport_mode != TransportMode::Ts6 && config.transport_mode != TransportMode::TsAuto,
+    })
+    .child(SettingRow {
+      name: "TS3 Host".into(),
+      description: Some("TeamSpeak 3 ClientQuery host.".into()),
+      kind: SettingKind::Input(Some(config.ts3_host.clone().unwrap_or_else(|| "127.0.0.1".into()))),
+      on_change: make_updater(app.clone(), local_config, |cfg, v| {
+        cfg.ts3_host = Some(v);
+      }),
+      disabled: config.transport_mode != TransportMode::Ts3 && config.transport_mode != TransportMode::TsAuto,
+    })
+    .child(SettingRow {
+      name: "TS3 Port".into(),
+      description: Some("TeamSpeak 3 ClientQuery port (default 25639).".into()),
+      kind: SettingKind::Input(Some(config.ts3_port.unwrap_or(25639).to_string())),
+      on_change: make_updater(app.clone(), local_config, |cfg, v| {
+        if let Ok(n) = v.trim().parse::<u16>() {
+          cfg.ts3_port = Some(n);
+        }
+      }),
+      disabled: config.transport_mode != TransportMode::Ts3 && config.transport_mode != TransportMode::TsAuto,
+    })
+    .child(SettingRow {
+      name: "TS3 API Key".into(),
+      description: Some(
+        "ClientQuery API key (TS3: Tools > Options > Client Query). Leave blank to auto-detect from clientquery.ini.".into(),
+      ),
+      kind: SettingKind::Input(config.ts3_api_key.clone()),
+      on_change: make_updater(app.clone(), local_config, |cfg, v| {
+        cfg.ts3_api_key = (!v.trim().is_empty()).then_some(v);
+      }),
+      disabled: config.transport_mode != TransportMode::Ts3 && config.transport_mode != TransportMode::TsAuto,
     })
     .child(divider())
     .child(

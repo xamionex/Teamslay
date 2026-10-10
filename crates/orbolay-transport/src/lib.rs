@@ -1,6 +1,8 @@
 pub mod config_watcher;
 pub mod ipc;
 pub mod transport;
+pub mod ts3;
+pub mod ts6;
 pub mod updates;
 pub mod util;
 pub mod websocket;
